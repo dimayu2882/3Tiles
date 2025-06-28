@@ -1,0 +1,36 @@
+export const allTextureKeys = {
+	button: 'button',
+	bgBottom:  'bg-bottom',
+	bgTop:  'bg-top',
+	borderUnit: 'border-unit',
+	buttonShadow:  'button-shadow',
+	container: 'container',
+	containerBorder: 'containerBorder',
+	error: 'error',
+	finger: 'finger',
+	logo: 'logo',
+	unitOne: 'unit-1',
+	unitTwo: 'unit-2',
+	unitThree: 'unit-3',
+	unitFour: 'unitFour',
+	sound: 'sound',
+};
+
+
+export const appTextures = {
+	[allTextureKeys.button]: 'img/button.webp',
+	[allTextureKeys.bgBottom]: 'img/bg-bottom.webp',
+	[allTextureKeys.bgTop]: 'img/bg-top.webp',
+	[allTextureKeys.borderUnit]: 'img/border-unit.webp',
+	[allTextureKeys.buttonShadow]: 'img/button-shadow.webp',
+	[allTextureKeys.container]: 'img/container.webp',
+	[allTextureKeys.containerBorder]: 'img/container-border.webp',
+	[allTextureKeys.error]: 'img/error.webp',
+	[allTextureKeys.finger]: 'img/finger.webp',
+	[allTextureKeys.logo]: 'img/logo.webp',
+	[allTextureKeys.unitOne]: 'img/unit-1.webp',
+	[allTextureKeys.unitTwo]: 'img/unit-2.webp',
+	[allTextureKeys.unitThree]: 'img/unit-3.webp',
+	[allTextureKeys.unitFour]: 'img/unit-4.webp',
+	[allTextureKeys.sound]: 'img/sound.webp',
+};
