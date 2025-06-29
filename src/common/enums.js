@@ -5,6 +5,11 @@ export const labels = {
 	leftScene: 'leftScene',
 	rightScene: 'rightScene',
 	containerUnits: 'containerUnits',
+	board: 'board',
+	boardBack: 'boardBack',
+	boardFront: 'boardFront',
+	unit: 'unit',
+	finger:  'finger',
 };
 
 export const elementType = {

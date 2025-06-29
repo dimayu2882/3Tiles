@@ -3,6 +3,7 @@ import createBackgroundTop from './backgroundTop.js';
 import createBackgroundBottom from './backgroundBottom.js';
 import createLeftScene from './leftScene.js';
 import createRightScene from './rightScene.js';
+import createCell from './cell.js';
 
 export {
 	createSoundButton,
@@ -10,4 +11,5 @@ export {
 	createBackgroundBottom,
 	createLeftScene,
 	createRightScene,
+	createCell,
 };

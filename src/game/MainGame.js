@@ -6,7 +6,7 @@ import { labels } from '../common/enums.js';
 import {
 	createSoundButton,
 	createBackgroundTop,
-	createBackgroundBottom, createLeftScene
+	createBackgroundBottom, createLeftScene, createRightScene
 } from '../ui/index.js';
 import { eventBus } from '../utils/EventBus.js';
 import { GameManager } from './GameManager.js';
@@ -49,6 +49,7 @@ export class MainGame {
 			createBackgroundTop(app),
 			createBackgroundBottom(app),
 			createLeftScene(app),
+			createRightScene(app),
 			createSoundButton(app),
 		);
 
