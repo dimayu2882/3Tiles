@@ -15,8 +15,8 @@ export class AppGame {
 	async initGame() {
 		this.app = new Application();
 		await this.app.init({
-			width: GAME_WIDTH,
-			height: GAME_HEIGHT,
+			width: window.innerWidth,
+			height: window.innerWidth / 2,
 			backgroundAlpha: 0,
 			antialias: true,
 			autoDensity: true,
@@ -38,11 +38,11 @@ export class AppGame {
 			let width, height;
 			
 			if (ww >= wh) {
-				width = Math.min(ww, wh * 2, GAME_WIDTH);
+				width = ww;
 				height = width / 2;
 			} else {
-				height = Math.min(wh, ww * 2);
-				width = height / 2;
+				height = window.innerHeight;
+				width = window.innerWidth;
 			}
 			return { width, height };
 		}

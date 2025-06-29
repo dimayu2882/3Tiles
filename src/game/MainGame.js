@@ -3,7 +3,11 @@ import { Assets, Container } from 'pixi.js';
 import { appTextures } from '../common/assets.js';
 import { LOADER_FILL, PRELOADER_ID } from '../common/constants.js';
 import { labels } from '../common/enums.js';
-import { createSoundButton } from '../ui/index.js';
+import {
+	createSoundButton,
+	createBackgroundTop,
+	createBackgroundBottom, createLeftScene
+} from '../ui/index.js';
 import { eventBus } from '../utils/EventBus.js';
 import { GameManager } from './GameManager.js';
 
@@ -40,10 +44,13 @@ export class MainGame {
 		const { app } = this;
 		await this.loadAppAssets();
 
-		this.gameContainer.addChild(
-			createSoundButton(app)
-		);
 		app.stage.addChild(this.gameContainer);
+		this.gameContainer.addChild(
+			createBackgroundTop(app),
+			createBackgroundBottom(app),
+			createLeftScene(app),
+			createSoundButton(app),
+		);
 
 		this.gameManager = new GameManager(app);
 		eventBus.emit('startGame');
