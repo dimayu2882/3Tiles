@@ -18,11 +18,16 @@ export default function createLeftScene(app) {
 	elementTextTitle.position.set(elementTextTitle.width / 2, elementTextTitle.height / 2);
 	
 	const containerUnits = new PixiElement({
-		type: elementType.SPRITE,
-		texture: allTextureKeys.container,
+		type: elementType.CONTAINER,
 		label: labels.containerUnits
 	});
 	const elementContainerUnits = containerUnits.getElement();
+	
+	const containerUnitsSprite = new PixiElement({
+		type: elementType.SPRITE,
+		texture: allTextureKeys.container,
+	});
+	containerUnitsSprite.addToContainer(elementContainerUnits)
 	
 	const leftScene = new PixiElement({
 			type: elementType.CONTAINER,

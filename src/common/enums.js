@@ -9,7 +9,9 @@ export const labels = {
 	boardBack: 'boardBack',
 	boardFront: 'boardFront',
 	unit: 'unit',
+	unitBoard: 'unitBoard',
 	finger:  'finger',
+	error: 'error',
 };
 
 export const elementType = {

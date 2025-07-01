@@ -34,6 +34,7 @@ export class PixiElement {
 			half: (el, half) => (el.half = half),
 			label: (el, label) => (el.label = label),
 			zIndex: (el, zIndex) => (el.zIndex = zIndex),
+			visible: (el, visible) => (el.visible = visible),
 		};
 
 		Object.entries(properties).forEach(([key, setter]) => {

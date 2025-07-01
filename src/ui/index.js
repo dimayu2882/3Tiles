@@ -4,6 +4,7 @@ import createBackgroundBottom from './backgroundBottom.js';
 import createLeftScene from './leftScene.js';
 import createRightScene from './rightScene.js';
 import createCell from './cell.js';
+import createErrorBorder from './error.js';
 
 export {
 	createSoundButton,
@@ -12,4 +13,5 @@ export {
 	createLeftScene,
 	createRightScene,
 	createCell,
+	createErrorBorder,
 };

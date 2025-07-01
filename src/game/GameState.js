@@ -21,6 +21,7 @@ class GameState {
 	// getActiveStar = () => this.activeStar;
 	
 	setActiveCell = (cell) => {
+		this.activeCells.push(cell);
 		
 		return getUIElement(cell, cell.label);
 	};
