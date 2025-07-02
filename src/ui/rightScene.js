@@ -1,5 +1,4 @@
 import { gsap } from 'gsap';
-import { allTextureKeys } from '../common/assets.js';
 
 import { UNITS } from '../common/constants.js';
 import { PixiElement } from '../utils/PixiElement.js';

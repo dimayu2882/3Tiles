@@ -48,6 +48,7 @@ export class GameManager {
 		this.board.interactive = true;
 		this.board.buttonMode = true;
 		this.board.on('pointerdown', this.handleBoardClick);
+		soundManager.play('bg');
 	}
 	
 	handleBoardClick = (event) => {
@@ -70,6 +71,7 @@ export class GameManager {
 	};
 	
 	onGridClick = (event) => {
+		soundManager.play('tap');
 		if (gameState.getClickCount() >= 3) return;
 		
 		const clickedCell = event.target;
@@ -91,9 +93,10 @@ export class GameManager {
 				gameState.activeCells = [];
 				gameState.resetClickCount();
 				
-				this.boardFront.children.length === 0
+				this.boardFront.children.length === 1
 					? this.setBoardBackActive(false)
 					: this.setBoardBackActive(true);
+				soundManager.play('win');
 				this.checkGameOver();
 			});
 		}
@@ -202,6 +205,8 @@ export class GameManager {
 				});
 				cell.zIndex = cell.zIndex - 10;
 			});
+			
+			soundManager.play('wrong');
 			
 			activeCells.splice(0, activeCells.length - 1);
 			gameState.clickCount = 1;
