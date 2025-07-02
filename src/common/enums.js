@@ -12,6 +12,10 @@ export const labels = {
 	unitBoard: 'unitBoard',
 	finger:  'finger',
 	error: 'error',
+	sceneFinish: 'sceneFinish',
+	sceneFinishRight: 'sceneFinishRight',
+	sceneFinishLeft: 'sceneFinishLeft',
+	button: 'button',
 };
 
 export const elementType = {

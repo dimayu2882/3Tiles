@@ -5,6 +5,8 @@ import createLeftScene from './leftScene.js';
 import createRightScene from './rightScene.js';
 import createCell from './cell.js';
 import createErrorBorder from './error.js';
+import createSceneFinish from './finish.js';
+import createFinger from './finger.js';
 
 export {
 	createSoundButton,
@@ -14,4 +16,6 @@ export {
 	createRightScene,
 	createCell,
 	createErrorBorder,
+	createSceneFinish,
+	createFinger,
 };

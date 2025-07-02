@@ -21,9 +21,6 @@ export default function createCell(app, cellObject, row, col, cellSize, interact
 	});
 	const elementUnitActive = unitActive.getElement();
 	
-	elementUnit.x = col * (cellSize - cellSize / 4.5) + cellSize / 2;
-	elementUnit.y = row * (cellSize - cellSize / 4.5) + cellSize / 2;
-	
 	const unitContainer = new PixiElement({
 		type: elementType.CONTAINER,
 		label: cellObject.name,
@@ -34,6 +31,11 @@ export default function createCell(app, cellObject, row, col, cellSize, interact
 	},onResizeHandler, true);
 	unitContainer.registerFlag('isActive', false)
 	const elementUnitContainer = unitContainer.getElement();
+	
+	elementUnitContainer.position.set(
+		col * (cellSize - cellSize / 4.5) + cellSize / 2,
+		row * (cellSize - cellSize / 4.5) + cellSize / 2
+	);
 	
 	unitContainer.addChildren([elementUnit, elementUnitActive]);
 	

@@ -23,8 +23,9 @@ export class GameManager {
 		this.leftScene = getUIElement(this.gameContainer, labels.leftScene);
 		this.containerCells = getUIElement(this.leftScene, labels.containerUnits);
 		this.slash = getUIElement(this.soundButton, labels.muteSlash);
-		
-		this.selectedCellsWithBorders = new Map();
+		this.finishScene = getUIElement(this.gameContainer, labels.sceneFinish);
+		this.finishSceneLeft = getUIElement(this.finishScene, labels.sceneFinishLeft);
+		this.finishSceneRight = getUIElement(this.finishScene, labels.sceneFinishRight);
 		
 		// Инициализация фильтров
 		this.grayscaleFilter = new ColorMatrixFilter();
@@ -93,6 +94,7 @@ export class GameManager {
 				this.boardFront.children.length === 0
 					? this.setBoardBackActive(false)
 					: this.setBoardBackActive(true);
+				this.checkGameOver();
 			});
 		}
 	};
@@ -231,6 +233,43 @@ export class GameManager {
 			x: 0.45,
 			y: 0.45,
 			ease: 'back.out(1.7)'
+		});
+	}
+	
+	checkGameOver = () => {
+		console.log(this.boardFront.children.length, this.boardBack.children.length);
+		if (!this.boardFront.children.length && !this.boardBack.children.length) {
+			gameState.isGameOver = true;
+			this.changeSceneFinished();
+		}
+	}
+	
+	changeSceneFinished = () => {
+		this.finishScene.visible = true;
+		this.finishSceneLeft.scale.set(0);
+		this.finishSceneRight.scale.set(0);
+		
+		const tl = gsap.timeline();
+		
+		tl.to(this.leftScene.scale, {
+			duration: 1,
+			x: 0,
+			y: 0,
+			ease: 'power2.out',
+		});
+		
+		tl.to(this.finishSceneLeft.scale, {
+			duration: 1,
+			x: 1,
+			y: 1,
+			ease: 'back.out(1.7)',
+		});
+		
+		tl.to(this.finishSceneRight.scale, {
+			duration: 1,
+			x: 1,
+			y: 1,
+			ease: 'back.out(1.7)',
 		});
 	}
 	

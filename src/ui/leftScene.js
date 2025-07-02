@@ -10,9 +10,9 @@ export default function createLeftScene(app) {
 			fontFamily: 'Arial',
 			fontSize: app.renderer.width / 20,
 			fill: '#313131',
-			align: 'center',
+			align: 'center'
 		},
-		anchor: [0.5],
+		anchor: [0.5]
 	});
 	const elementTextTitle = textTitle.getElement();
 	elementTextTitle.position.set(elementTextTitle.width / 2, elementTextTitle.height / 2);
@@ -25,14 +25,14 @@ export default function createLeftScene(app) {
 	
 	const containerUnitsSprite = new PixiElement({
 		type: elementType.SPRITE,
-		texture: allTextureKeys.container,
+		texture: allTextureKeys.container
 	});
-	containerUnitsSprite.addToContainer(elementContainerUnits)
+	containerUnitsSprite.addToContainer(elementContainerUnits);
 	
 	const leftScene = new PixiElement({
-			type: elementType.CONTAINER,
-			label: labels.leftScene,
-		}, onResizeHandlerLeftScene, true);
+		type: elementType.CONTAINER,
+		label: labels.leftScene,
+	}, onResizeHandlerLeftScene, true);
 	const elementLeftScene = leftScene.getElement();
 	
 	leftScene.addChildren([elementTextTitle, elementContainerUnits]);
@@ -48,7 +48,7 @@ export default function createLeftScene(app) {
 		app.renderer.height / 2
 	);
 	
-	function textChangeAnimation (textObject, newText) {
+	function textChangeAnimation(textObject, newText) {
 		const duration = 400;
 		const startScale = 0.1;
 		const initialAlpha = textObject.alpha;
@@ -85,7 +85,7 @@ export default function createLeftScene(app) {
 	setTimeout(() => {
 		textChangeAnimation(elementTextTitle, 'Clear \nthe board');
 	}, 5000);
-
+	
 	function onResizeHandlerLeftScene() {
 		onResizeHandlerTextTitle();
 		onResizeHandlerContainerUnits();
@@ -108,6 +108,6 @@ export default function createLeftScene(app) {
 			elementTextTitle.height + 20
 		);
 	}
-
+	
 	return elementLeftScene;
 }

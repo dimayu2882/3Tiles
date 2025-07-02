@@ -31,6 +31,7 @@ export class PixiElement {
 			eventMode: (el, mode) => (el.eventMode = mode),
 			cursor: (el, cursor) => (el.cursor = cursor),
 			interactive: (el, interactive) => (el.interactive = interactive),
+			buttonMode: (el, buttonMode) => (el.buttonMode = buttonMode),
 			half: (el, half) => (el.half = half),
 			label: (el, label) => (el.label = label),
 			zIndex: (el, zIndex) => (el.zIndex = zIndex),
