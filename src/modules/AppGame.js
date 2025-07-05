@@ -1,9 +1,12 @@
 import { Application } from 'pixi.js';
 
-import { CONTAINER_ID, GAME_HEIGHT, GAME_WIDTH } from '../common/constants.js';
+import { CONTAINER_ID } from '../common/constants.js';
 import { MainGame } from '../game/MainGame.js';
-import { initResizeManager, subscribeToResize } from '../utils/resizeManager.js';
-import { setAppInstance } from '../utils/utils.js';
+import {
+	initResizeManager,
+	subscribeToResize,
+} from '../utils/resizeManager.js';
+import { getAdaptiveSize, setAppInstance } from '../utils/utils.js';
 
 export class AppGame {
 	constructor() {
@@ -13,10 +16,12 @@ export class AppGame {
 	}
 
 	async initGame() {
+		const { width, height } = getAdaptiveSize();
+		
 		this.app = new Application();
 		await this.app.init({
-			width: window.innerWidth,
-			height: window.innerWidth / 2,
+			width,
+			height,
 			backgroundAlpha: 0,
 			antialias: true,
 			autoDensity: true,
@@ -30,27 +35,12 @@ export class AppGame {
 		setAppInstance(this.app);
 
 		await this.game.initializeGameElements();
-		
-		// Resize window
-		function getAdaptiveSize() {
-			const ww = window.innerWidth;
-			const wh = window.innerHeight;
-			let width, height;
-			
-			if (ww >= wh) {
-				width = ww;
-				height = width / 2;
-			} else {
-				height = window.innerHeight;
-				width = window.innerWidth;
-			}
-			return { width, height };
-		}
+
 		subscribeToResize(this.app);
 		this.app.onResize = () => {
 			const { width, height } = getAdaptiveSize();
 			this.app.renderer.resize(width, height);
-		}
+		};
 		initResizeManager();
 	}
 }

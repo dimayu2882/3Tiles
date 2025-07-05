@@ -1,8 +1,16 @@
-import { PixiElement } from '../utils/PixiElement.js';
 import { allTextureKeys } from '../common/assets.js';
 import { elementType, labels } from '../common/enums.js';
+import { PixiElement } from '../utils/PixiElement.js';
+import { getAdaptiveSize } from '../utils/utils.js';
 
 export default function createLeftScene(app) {
+	const leftScene = new PixiElement(
+		{
+			type: elementType.CONTAINER,
+			label: labels.leftScene
+		}, onResizeHandlerLeftScene, true);
+	const elementLeftScene = leftScene.getElement();
+	
 	const textTitle = new PixiElement({
 		type: elementType.TEXT,
 		text: 'Match 3 \nthe same tiles',
@@ -15,7 +23,6 @@ export default function createLeftScene(app) {
 		anchor: [0.5]
 	});
 	const elementTextTitle = textTitle.getElement();
-	elementTextTitle.position.set(elementTextTitle.width / 2, elementTextTitle.height / 2);
 	
 	const containerUnits = new PixiElement({
 		type: elementType.CONTAINER,
@@ -25,28 +32,34 @@ export default function createLeftScene(app) {
 	
 	const containerUnitsSprite = new PixiElement({
 		type: elementType.SPRITE,
-		texture: allTextureKeys.container
+		texture: allTextureKeys.container,
+		width: 325
 	});
 	containerUnitsSprite.addToContainer(elementContainerUnits);
 	
-	const leftScene = new PixiElement({
-		type: elementType.CONTAINER,
-		label: labels.leftScene,
-	}, onResizeHandlerLeftScene, true);
-	const elementLeftScene = leftScene.getElement();
-	
 	leftScene.addChildren([elementTextTitle, elementContainerUnits]);
 	
-	elementContainerUnits.position.set(
-		(elementTextTitle.width - elementContainerUnits.width) / 2,
-		elementTextTitle.height + 20
-	);
+	function setElementsPosition() {
+		const maxWidth = Math.max(elementTextTitle.width, elementContainerUnits.width);
+		elementTextTitle.position.set(maxWidth / 2, elementTextTitle.height / 2);
+		elementContainerUnits.position.set(
+			maxWidth / 2 - elementContainerUnits.width / 2,
+			elementTextTitle.height + 20
+		);
+		
+		const totalHeight = elementTextTitle.height + 20 + elementContainerUnits.height;
+		elementLeftScene.pivot.set(maxWidth / 2, totalHeight / 2);
+		
+		const { width, height } = getAdaptiveSize();
+		
+		if (width > height) {
+			elementLeftScene.position.set(width / 4, height / 2);
+		} else {
+			elementLeftScene.position.set(width / 2, height / 4);
+		}
+	}
 	
-	elementLeftScene.pivot.set(elementLeftScene.width / 2, elementLeftScene.height / 2);
-	elementLeftScene.position.set(
-		app.renderer.width / 4,
-		app.renderer.height / 2
-	);
+	setElementsPosition();
 	
 	function textChangeAnimation(textObject, newText) {
 		const duration = 400;
@@ -89,12 +102,7 @@ export default function createLeftScene(app) {
 	function onResizeHandlerLeftScene() {
 		onResizeHandlerTextTitle();
 		onResizeHandlerContainerUnits();
-		
-		elementLeftScene.pivot.set(elementLeftScene.width / 2, elementLeftScene.height / 2);
-		elementLeftScene.position.set(
-			app.renderer.width / 4,
-			app.renderer.height / 2
-		);
+		setElementsPosition();
 	}
 	
 	function onResizeHandlerTextTitle() {

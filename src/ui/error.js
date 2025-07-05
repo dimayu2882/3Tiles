@@ -19,6 +19,7 @@ export default function createErrorBorder(app) {
 	
 	function onResizeHandler() {
 		elementErrorBorder.width = app.renderer.width;
+		elementErrorBorder.height =  app.renderer.height;
 	}
 
 	return elementErrorBorder;

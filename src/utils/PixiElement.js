@@ -1,5 +1,5 @@
 import { elementType } from '../common/enums.js';
-import { subscribeToResize } from './resizeManager.js';
+import { subscribeToResize, unsubscribeFromResize } from './resizeManager.js';
 import { getAppInstance, UIFactory } from './utils.js';
 
 export class PixiElement {
@@ -7,6 +7,7 @@ export class PixiElement {
 		this.type = config.type || elementType.CONTAINER;
 		this.instance = this._create(config);
 		this.app = getAppInstance();
+		this.instance.__owner = this;
 		this.onResizeHandler = onResizeHandler;
 		if (isSubscribeToResize) subscribeToResize(this);
 	}
@@ -56,8 +57,11 @@ export class PixiElement {
 	hide = () => (this.instance.visible = false);
 
 	onResize = () => this.onResizeHandler();
-
-	destroy = () => this.instance.destroy({ children: true });
+	
+	destroy = () => {
+		unsubscribeFromResize(this);
+		this.instance.destroy({ children: true });
+	};
 
 	addChildren = children => children.forEach(child => this.instance.addChild(child));
 

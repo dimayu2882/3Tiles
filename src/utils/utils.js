@@ -1,4 +1,11 @@
-import { AnimatedSprite, Assets, Container, Graphics, Sprite, Text } from 'pixi.js';
+import {
+	AnimatedSprite,
+	Assets,
+	Container,
+	Graphics,
+	Sprite,
+	Text,
+} from 'pixi.js';
 
 import { elementType } from '../common/enums.js';
 
@@ -69,13 +76,28 @@ export class UIFactory {
 	static createContainer() {
 		return new Container();
 	}
-	
+
 	static createAnimatedSprite({ texture, animationSpeed }) {
 		const sheet = Assets.cache.get(texture);
 		const textures = Object.values(sheet.textures);
 		const animatedSprite = new AnimatedSprite(textures);
-		
+
 		animatedSprite.animationSpeed = animationSpeed;
 		return animatedSprite;
 	}
+}
+
+export function getAdaptiveSize() {
+	const ww = window.innerWidth;
+	const wh = window.innerHeight;
+	let width, height;
+
+	if (ww >= wh) {
+		width = ww;
+		height = width / 2;
+	} else {
+		height = window.innerHeight;
+		width = window.innerWidth;
+	}
+	return { width, height };
 }

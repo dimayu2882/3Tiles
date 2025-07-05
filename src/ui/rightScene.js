@@ -1,8 +1,9 @@
 import { gsap } from 'gsap';
 
-import { UNITS } from '../common/constants.js';
-import { PixiElement } from '../utils/PixiElement.js';
+import { CELL_SIZE, UNITS } from '../common/constants.js';
 import { elementType, labels } from '../common/enums.js';
+import { PixiElement } from '../utils/PixiElement.js';
+import { getAdaptiveSize } from '../utils/utils.js';
 import createCell from './cell.js';
 import { createFinger } from './index.js';
 
@@ -10,7 +11,7 @@ export default function createRightScene(app) {
 	const board = new PixiElement({
 		type: elementType.CONTAINER,
 		label: labels.board,
-		interactive: true,
+		interactive: true
 	}, onResizeHandler, true);
 	const elementBoard = board.getElement();
 	
@@ -28,25 +29,39 @@ export default function createRightScene(app) {
 	});
 	const elementBoardFront = boardFront.getElement();
 	
-	const arrayUnitsBoardBack = UNITS
-		.flatMap((item) => [item, item, item])
+	const arrayUnitsBoardBack = UNITS.flatMap(item => [item, item, item])
 		.sort(() => Math.random() - 0.5)
 		.map((cellObject, index) => {
 			const col = index % 3;
 			const row = Math.floor(index / 3);
 			
-			return createCell(app, cellObject, row, col, app.renderer.width / 12, false, index);
+			return createCell(
+				app,
+				cellObject,
+				row,
+				col,
+				CELL_SIZE,
+				false,
+				index
+			);
 		});
 	
-	const arrayUnitsBoardFront = UNITS
-		.slice(0, 2)
-		.flatMap((item) => [item, item, item])
+	const arrayUnitsBoardFront = UNITS.slice(0, 2)
+		.flatMap(item => [item, item, item])
 		.sort(() => Math.random() - 0.5)
 		.map((cellObject, index) => {
 			const col = index % 2;
 			const row = Math.floor(index / 2);
 			
-			return createCell(app, cellObject, row, col, app.renderer.width / 13, true, index);
+			return createCell(
+				app,
+				cellObject,
+				row,
+				col,
+				CELL_SIZE,
+				true,
+				index
+			);
 		});
 	
 	const finger = createFinger();
@@ -56,47 +71,57 @@ export default function createRightScene(app) {
 	boardFront.addChildren([...arrayUnitsBoardFront, finger]);
 	
 	board.addChildren([elementBoardBack, elementBoardFront]);
-	elementBoard.pivot.set(elementBoard.width / 2, elementBoard.height / 2);
-	elementBoard.position.set(
-		app.renderer.width * 3 / 4,
-		app.renderer.height / 2
-	);
-	
-	elementBoardBack.pivot.set(elementBoard.width / 2, elementBoard.height / 2);
-	elementBoardBack.position.set(elementBoard.width / 2, elementBoard.height / 2);
-	elementBoardFront.pivot.set(elementBoard.width / 2, elementBoard.height / 2);
-	elementBoardFront.position.set(elementBoard.width / 2, elementBoard.height / 2);
 	elementBoard.sortableChildren = true;
 	
+	function setElementsPosition() {
+		const { width, height } = getAdaptiveSize();
+		
+		const boardBounds = elementBoard.getLocalBounds();
+		const frontBounds = elementBoardFront.getLocalBounds();
+		
+		elementBoard.pivot.set(boardBounds.width / 2, boardBounds.height / 2);
+		
+		elementBoardBack.pivot.set(elementBoardBack.width / 2, elementBoardBack.height / 2);
+		elementBoardBack.position.set(boardBounds.width / 2, boardBounds.height / 2);
+		
+		elementBoardFront.pivot.set(frontBounds.width / 2, frontBounds.height / 2);
+		elementBoardFront.position.set(boardBounds.width / 2, boardBounds.height / 2);
+		
+		if (width > height) {
+			elementBoard.position.set((app.renderer.width * 3) / 4, app.renderer.height / 2);
+			
+		} else {
+			elementBoard.position.set(app.renderer.width  / 2, (app.renderer.height * 2) / 3);
+		}
+	}
+	
+	setElementsPosition();
+	
 	function onResizeHandler() {
-		elementBoard.pivot.set(elementBoard.width / 2, elementBoard.height / 2);
-		elementBoard.position.set(
-			app.renderer.width * 3 / 4,
-			app.renderer.height / 2
-		);
+		setElementsPosition();
 	}
 	
 	function getMatchedGroup() {
-		return elementBoardFront.children.filter(
-			cell => cell.label === 'unitOne'
-		);
+		return elementBoardFront.children.filter(cell => cell.label === 'unitOne');
 	}
 	
 	animateCursorSequence(() => {
 		setTimeout(() => {
-			finger.visible = false;
+			finger.destroy();
 		}, 1000);
 	});
 	
 	function scaleFinger() {
-		return gsap.to(finger.scale, {
-			x: 0.8,
-			y: 0.8,
-			duration: 0.3,
-			yoyo: true,
-			repeat: 1,
-			ease: 'power1.inOut',
-		}).then();
+		return gsap
+			.to(finger.scale, {
+				x: 0.8,
+				y: 0.8,
+				duration: 0.3,
+				yoyo: true,
+				repeat: 1,
+				ease: 'power1.inOut'
+			})
+			.then();
 	}
 	
 	function animateCursorSequence(onComplete) {

@@ -49,7 +49,7 @@ export class GameManager {
 		this.board.buttonMode = true;
 		this.board.on('pointerdown', this.handleBoardClick);
 		soundManager.play('bg');
-	}
+	};
 	
 	handleBoardClick = (event) => {
 		const clickedElement = event.target;
@@ -93,7 +93,7 @@ export class GameManager {
 				gameState.activeCells = [];
 				gameState.resetClickCount();
 				
-				this.boardFront.children.length === 1
+				!this.boardFront.children.length
 					? this.setBoardBackActive(false)
 					: this.setBoardBackActive(true);
 				soundManager.play('win');
@@ -116,7 +116,9 @@ export class GameManager {
 		for (const cell of cells) {
 			if (!cell || cell.destroyed) {
 				completedAnimationsCount++;
-				if (completedAnimationsCount === totalAnimations) onAllAnimationsComplete?.();
+				if (completedAnimationsCount === totalAnimations) {
+					onAllAnimationsComplete?.();
+				}
 				continue;
 			}
 			
@@ -125,7 +127,7 @@ export class GameManager {
 			
 			const tl = gsap.timeline({
 				onComplete: () => {
-					if (cell && cell.destroy && !cell.destroyed) cell.destroy({ children: true });
+					if (cell && cell.destroy && !cell.destroyed) cell?.__owner.destroy();
 					
 					completedAnimationsCount++;
 					
@@ -211,7 +213,7 @@ export class GameManager {
 			activeCells.splice(0, activeCells.length - 1);
 			gameState.clickCount = 1;
 		}
-	}
+	};
 	
 	addToResultContainer = (label) => {
 		const spacing = 20;
@@ -239,15 +241,14 @@ export class GameManager {
 			y: 0.45,
 			ease: 'back.out(1.7)'
 		});
-	}
+	};
 	
 	checkGameOver = () => {
-		console.log(this.boardFront.children.length, this.boardBack.children.length);
 		if (!this.boardFront.children.length && !this.boardBack.children.length) {
 			gameState.isGameOver = true;
 			this.changeSceneFinished();
 		}
-	}
+	};
 	
 	changeSceneFinished = () => {
 		this.finishScene.visible = true;
@@ -276,7 +277,7 @@ export class GameManager {
 			y: 1,
 			ease: 'back.out(1.7)',
 		});
-	}
+	};
 	
 	toggleSound = () => {
 		const isMuted = soundManager.toggleMute();
