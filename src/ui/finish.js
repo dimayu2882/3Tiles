@@ -34,6 +34,7 @@ export default function createSceneFinish(app) {
 			fill: '#313131',
 			align: 'center'
 		},
+		anchor: [0.5]
 	});
 	const elementLeftSceneFinishText = leftSceneFinishText.getElement();
 	
@@ -81,31 +82,31 @@ export default function createSceneFinish(app) {
 	function setElementsPosition() {
 		const { width, height } = getAdaptiveSize();
 		
-		elementSceneFinishLogo.x = elementLeftSceneFinishText.width / 2;
-		elementLeftSceneFinishText.position.set(0, elementSceneFinishLogo.height / 2 + 10);
+		elementSceneFinishLogo.x = elementSceneFinishLogo.width / 2;
+		elementLeftSceneFinishText.position.set(elementSceneFinishLogo.width / 2, elementSceneFinishLogo.height);
 		
 		if (width > height) {
-			elementLeftSceneFinish.position.set(app.renderer.width / 4, app.renderer.height / 2);
+			elementLeftSceneFinish.position.set(app.renderer.width / 4, app.renderer.height / 1.6);
 			
 			elementRightSceneFinish.position.set(app.renderer.width * 3 / 4, app.renderer.height / 2);
 			
 			elementLeftSceneFinish.pivot.set(
-				elementLeftSceneFinish.width / 2,
-				(elementLeftSceneFinish.height - elementSceneFinishLogo.height /2) / 2
+				elementLeftSceneFinish.getLocalBounds().width / 2,
+				elementLeftSceneFinish.getLocalBounds().height / 2 - 30,
 			);
 		} else {
-			elementLeftSceneFinish.position.set(app.renderer.width / 2, app.renderer.height / 4);
+			elementLeftSceneFinish.position.set(app.renderer.width / 2, app.renderer.height / 3);
 			
 			elementRightSceneFinish.position.set(app.renderer.width / 2, app.renderer.height * 3 / 4);
 			
 			elementLeftSceneFinish.pivot.set(
-				elementLeftSceneFinish.width / 2,
-				(elementLeftSceneFinish.height - elementSceneFinishLogo.height /2) / 2
+				elementLeftSceneFinish.getLocalBounds().width / 2,
+				elementLeftSceneFinish.getLocalBounds().height / 2,
 			);
 		}
 	}
 	
-	setElementsPosition()
+	setElementsPosition();
 	
 	function onResizeHandler() {
 		setElementsPosition();
