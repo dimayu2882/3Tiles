@@ -71,9 +71,9 @@ export class PixiElement {
 	
 	playAnimatedSprite = () => {
 		this.type === elementType.ANIMATED_SPRITE ? this.instance.play() : null;
-	}
+	};
 	
 	stopAnimatedSprite = () => {
 		this.type === elementType.ANIMATED_SPRITE ? this.instance.stop() : null;
-	}
+	};
 }

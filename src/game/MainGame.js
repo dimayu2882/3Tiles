@@ -10,7 +10,7 @@ import {
 	createLeftScene,
 	createRightScene,
 	createErrorBorder,
-	createSceneFinish, createFinger
+	createSceneFinish,
 } from '../ui/index.js';
 import { eventBus } from '../utils/EventBus.js';
 import { GameManager } from './GameManager.js';

@@ -1,22 +1,23 @@
 import { Howl, Howler } from 'howler';
+import { audioAssets } from '../common/assets.js';
 
 class SoundManager {
 	constructor() {
 		this.sounds = {
 			tap: new Howl({
-				src: ['audio/tap.mp3'],
+				src: [audioAssets.tap],
 				volume: 0.2,
 			}),
 			win: new Howl({
-				src: ['audio/win.mp3'],
+				src: [audioAssets.win],
 				volume: 0.2,
 			}),
 			wrong: new Howl({
-				src: ['audio/wrong.mp3'],
+				src: [audioAssets.wrong],
 				volume: 0.2,
 			}),
 			bg: new Howl({
-				src: ['audio/bg.mp3'],
+				src: [audioAssets.bg],
 				loop: true,
 				volume: 0.2,
 			}),
