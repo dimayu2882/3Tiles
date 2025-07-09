@@ -32,6 +32,8 @@ export default defineConfig([
 				__dirname: 'readonly',
 				setTimeout: 'readonly',
 				clearTimeout: 'readonly',
+				setInterval: 'readonly',
+				clearInterval: 'readonly',
 			},
 		},
 	},
