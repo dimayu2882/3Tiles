@@ -25,16 +25,10 @@ export default function createSceneFinish(app) {
 	
 	// Text
 	const leftSceneFinishText = new PixiElement({
-		type: elementType.TEXT,
-		text: '3 Tiles \nPuzzle\nmatch game',
-		style: {
-			fontFamily: 'Arial',
-			fontSize: app.renderer.width / 25,
-			fontWeight: 'bold',
-			fill: '#313131',
-			align: 'center'
-		},
-		anchor: [0.5]
+		type: elementType.SPRITE,
+		texture: allTextureKeys.textMatch,
+		anchor: [0.5],
+		scale: [0.8]
 	});
 	const elementLeftSceneFinishText = leftSceneFinishText.getElement();
 	
@@ -81,28 +75,21 @@ export default function createSceneFinish(app) {
 	
 	function setElementsPosition() {
 		const { width, height } = getAdaptiveSize();
-		
 		elementSceneFinishLogo.x = elementSceneFinishLogo.width / 2;
 		elementLeftSceneFinishText.position.set(elementSceneFinishLogo.width / 2, elementSceneFinishLogo.height);
 		
+		const bounds = elementLeftSceneFinish.getLocalBounds();
+		
 		if (width > height) {
-			elementLeftSceneFinish.position.set(app.renderer.width / 4, app.renderer.height / 1.6);
+			elementLeftSceneFinish.position.set(app.renderer.width / 4, app.renderer.height / 2);
+			elementLeftSceneFinish.pivot.set(bounds.minX + bounds.width / 2, bounds.minY + bounds.height / 2);
 			
 			elementRightSceneFinish.position.set(app.renderer.width * 3 / 4, app.renderer.height / 2);
-			
-			elementLeftSceneFinish.pivot.set(
-				elementLeftSceneFinish.getLocalBounds().width / 2,
-				elementLeftSceneFinish.getLocalBounds().height / 2 - 30,
-			);
 		} else {
 			elementLeftSceneFinish.position.set(app.renderer.width / 2, app.renderer.height / 3);
+			elementLeftSceneFinish.pivot.set(bounds.minX + bounds.width / 2, bounds.minY + bounds.height / 2);
 			
 			elementRightSceneFinish.position.set(app.renderer.width / 2, app.renderer.height * 3 / 4);
-			
-			elementLeftSceneFinish.pivot.set(
-				elementLeftSceneFinish.getLocalBounds().width / 2,
-				elementLeftSceneFinish.getLocalBounds().height / 2,
-			);
 		}
 	}
 	

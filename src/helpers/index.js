@@ -1,39 +1,58 @@
-import { gsap } from 'gsap';
-import { Assets, Sprite } from 'pixi.js';
-
-export function createSprite(textureKey) {
-	const texture = Assets.cache.get(textureKey);
-	return new Sprite(texture);
-}
-
 export const getUIElement = (container, label) => container.getChildByLabel(label);
 
-export function animateContainer(target) {
-	gsap.to(target.scale, {
-		duration: 1,
-		x: 1,
-		y: 1,
-		ease: 'back.out(1.7)'
-	});
+export function watchIdleOnCanvas(canvas, timeoutMs, onIdle) {
+	let idleTimeout = null;
+	let idleInterval = null;
+	let isIdle = false;
 	
-	gsap.to(target, {
-		duration: 1,
-		rotation: Math.PI * 2,
-		ease: 'back.out(1.7)'
-	});
+	const clearAllTimers = () => {
+		clearTimeout(idleTimeout);
+		clearInterval(idleInterval);
+		idleTimeout = null;
+		idleInterval = null;
+	};
+	
+	const becomeIdle = () => {
+		if (isIdle) return;
+		
+		isIdle = true;
+		onIdle();
+		
+		idleInterval = setInterval(() => {
+			onIdle();
+		}, timeoutMs);
+	};
+	
+	const onUserActive = () => {
+		if (isIdle) {
+			isIdle = false;
+			clearAllTimers();
+		}
+		resetIdleTimer();
+	};
+	
+	const resetIdleTimer = () => {
+		clearAllTimers();
+		
+		idleTimeout = setTimeout(() => {
+			becomeIdle();
+		}, timeoutMs);
+	};
+	
+	const activityEvents = ['mousemove', 'mousedown', 'keydown', 'touchstart'];
+	
+	activityEvents.forEach(event =>
+		canvas.addEventListener(event, onUserActive, {
+			passive: event !== 'touchstart'
+		})
+	);
+	
+	resetIdleTimer();
+	
+	return () => {
+		clearAllTimers();
+		activityEvents.forEach(event =>
+			canvas.removeEventListener(event, onUserActive)
+		);
+	};
 }
-
-export const scaleTarget = target => {
-	gsap.killTweensOf(target.scale);
-
-	target.scale.set(1);
-
-	gsap.to(target.scale, {
-		x: 1.2,
-		y: 1.2,
-		duration: 0.6,
-		yoyo: true,
-		repeat: -1,
-		ease: 'sine.inOut',
-	});
-};

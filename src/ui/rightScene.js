@@ -2,6 +2,7 @@ import { gsap } from 'gsap';
 
 import { CELL_SIZE, UNITS } from '../common/constants.js';
 import { elementType, labels } from '../common/enums.js';
+import { watchIdleOnCanvas } from '../helpers/index.js';
 import { PixiElement } from '../utils/PixiElement.js';
 import { getAdaptiveSize } from '../utils/utils.js';
 import createCell from './cell.js';
@@ -68,9 +69,9 @@ export default function createRightScene(app) {
 	finger.zIndex = 99;
 	
 	boardBack.addChildren([...arrayUnitsBoardBack]);
-	boardFront.addChildren([...arrayUnitsBoardFront, finger]);
+	boardFront.addChildren([...arrayUnitsBoardFront]);
 	
-	board.addChildren([elementBoardBack, elementBoardFront]);
+	board.addChildren([elementBoardBack, elementBoardFront, finger]);
 	elementBoard.sortableChildren = true;
 	
 	function setElementsPosition() {
@@ -91,7 +92,7 @@ export default function createRightScene(app) {
 			elementBoard.position.set((app.renderer.width * 3) / 4, app.renderer.height / 2);
 			
 		} else {
-			elementBoard.position.set(app.renderer.width  / 2, (app.renderer.height * 2) / 3);
+			elementBoard.position.set(app.renderer.width / 2, (app.renderer.height * 2) / 3);
 		}
 	}
 	
@@ -102,40 +103,56 @@ export default function createRightScene(app) {
 	}
 	
 	function getMatchedGroup() {
-		return elementBoardFront.children.filter(cell => cell.label === 'unitOne');
+		if (elementBoardFront.children.length) {
+			const label = elementBoardFront.children[0].label;
+			return elementBoardFront.children.filter(cell => cell.label === label);
+		}
+		
+		if (elementBoardBack.children.length && !elementBoardFront.children.length) {
+			const label = elementBoardBack.children[0].label;
+			return elementBoardBack.children.filter(cell => cell.label === label);
+		}
 	}
 	
-	animateCursorSequence(() => {
-		setTimeout(() => {
-			finger.destroy();
-		}, 1000);
+	watchIdleOnCanvas(app.canvas, 5000, () => {
+		animateCursorSequence();
 	});
 	
 	function scaleFinger() {
-		return gsap
-			.to(finger.scale, {
-				x: 0.8,
-				y: 0.8,
-				duration: 0.3,
-				yoyo: true,
-				repeat: 1,
-				ease: 'power1.inOut'
-			})
-			.then();
+		return gsap.to(finger.scale, {
+			x: 0.6,
+			y: 0.6,
+			duration: 0.3,
+			yoyo: true,
+			repeat: 1,
+			ease: 'power1.inOut'
+		}).then();
 	}
 	
+	let isAnimating = false;
+	
 	function animateCursorSequence(onComplete) {
-		finger.visible = true;
+		if (isAnimating) return;
+		
 		const matchedGroup = getMatchedGroup();
+		if (!matchedGroup || !matchedGroup.length) return;
+		
+		isAnimating = true;
+		finger.visible = true;
+		finger.position.set(0, 0);
+		finger.scale.set(1);
+		
 		const tl = gsap.timeline({
 			onComplete: () => {
-				if (onComplete) onComplete();
+				finger.visible = false;
+				isAnimating = false;
+				onComplete?.();
 			}
 		});
 		
 		matchedGroup.forEach(cell => {
 			tl.to(finger.position, {
-				x: cell.position.x + finger.height / 4,
+				x: cell.position.x + finger.width / 4,
 				y: cell.position.y + finger.height / 2,
 				duration: 1.5,
 				ease: 'power2.inOut'

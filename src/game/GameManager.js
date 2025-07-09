@@ -48,7 +48,7 @@ export class GameManager {
 		this.board.interactive = true;
 		this.board.buttonMode = true;
 		this.board.on('pointerdown', this.handleBoardClick);
-		soundManager.play('bg');
+		// soundManager.play('bg');
 	};
 	
 	handleBoardClick = (event) => {
@@ -176,8 +176,8 @@ export class GameManager {
 		
 		gsap.to(cell.scale, {
 			duration: 1,
-			x: 1.01,
-			y: 1.01,
+			x: 1.09,
+			y: 1.09,
 			ease: 'back.out(1.7)'
 		});
 	};

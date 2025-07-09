@@ -1,9 +1,11 @@
+import gsap from 'gsap';
+
 import { allTextureKeys } from '../common/assets.js';
 import { elementType, labels } from '../common/enums.js';
 import { PixiElement } from '../utils/PixiElement.js';
 import { getAdaptiveSize } from '../utils/utils.js';
 
-export default function createLeftScene(app) {
+export default function createLeftScene() {
 	const leftScene = new PixiElement(
 		{
 			type: elementType.CONTAINER,
@@ -12,17 +14,20 @@ export default function createLeftScene(app) {
 	const elementLeftScene = leftScene.getElement();
 	
 	const textTitle = new PixiElement({
-		type: elementType.TEXT,
-		text: 'Match 3 \nthe same tiles',
-		style: {
-			fontFamily: 'Arial',
-			fontSize: app.renderer.width / 20,
-			fill: '#313131',
-			align: 'center'
-		},
-		anchor: [0.5]
+		type: elementType.SPRITE,
+		texture: allTextureKeys.textMatch,
+		anchor: [0.5],
+		scale: [0.8]
 	});
 	const elementTextTitle = textTitle.getElement();
+	
+	const textClear = new PixiElement({
+		type: elementType.SPRITE,
+		texture: allTextureKeys.textClear,
+		anchor: [0.5],
+		visible: false,
+	});
+	const elementTextClear = textClear.getElement();
 	
 	const containerUnits = new PixiElement({
 		type: elementType.CONTAINER,
@@ -37,17 +42,20 @@ export default function createLeftScene(app) {
 	});
 	containerUnitsSprite.addToContainer(elementContainerUnits);
 	
-	leftScene.addChildren([elementTextTitle, elementContainerUnits]);
+	leftScene.addChildren([elementTextTitle, elementTextClear, elementContainerUnits]);
+	
+	const heightText =  elementTextTitle.height;
 	
 	function setElementsPosition() {
 		const maxWidth = Math.max(elementTextTitle.width, elementContainerUnits.width);
 		elementTextTitle.position.set(maxWidth / 2, elementTextTitle.height / 2);
+		elementTextClear.position.set(maxWidth / 2, elementTextClear.height / 2 - 10);
 		elementContainerUnits.position.set(
 			maxWidth / 2 - elementContainerUnits.width / 2,
-			elementTextTitle.height + 20
+			heightText + 20
 		);
 		
-		const totalHeight = elementTextTitle.height + 20 + elementContainerUnits.height;
+		const totalHeight = heightText + 20 + elementContainerUnits.height;
 		elementLeftScene.pivot.set(maxWidth / 2, totalHeight / 2);
 		
 		const { width, height } = getAdaptiveSize();
@@ -61,60 +69,51 @@ export default function createLeftScene(app) {
 	
 	setElementsPosition();
 	
-	function textChangeAnimation(textObject, newText) {
-		const duration = 400;
+	function switchSpriteAnimation(spriteOut, spriteIn, duration = 0.4) {
 		const startScale = 0.1;
-		const initialAlpha = textObject.alpha;
-		const initialScaleX = textObject.scale.x;
-		const initialScaleY = textObject.scale.y;
 		
-		textObject.text = newText;
-		textObject.alpha = 0;
-		textObject.scale.set(startScale * initialScaleX, startScale * initialScaleY);
+		spriteIn.visible = true;
+		spriteIn.alpha = 0;
+		spriteIn.scale.set(startScale);
 		
-		let elapsed = 0;
+		gsap.to(spriteOut, {
+			alpha: 0,
+			onComplete: () => {
+				spriteOut.visible = false;
+				spriteOut.alpha = 1;
+				spriteOut.scale.set(1);
+			},
+			duration,
+			ease: 'power2.inOut'
+		});
 		
-		const onTick = () => {
-			elapsed += app.ticker.elapsedMS;
-			const progress = Math.min(1, elapsed / duration);
-			
-			textObject.alpha = initialAlpha * progress;
-			
-			textObject.scale.set(
-				initialScaleX * (startScale + (1 - startScale) * progress),
-				initialScaleY * (startScale + (1 - startScale) * progress)
-			);
-			
-			if (progress >= 1) {
-				textObject.alpha = initialAlpha;
-				textObject.scale.set(initialScaleX, initialScaleY);
-				app.ticker.remove(onTick);
-			}
-		};
+		gsap.to(spriteOut.scale, {
+			x: startScale,
+			y: startScale,
+			duration,
+			ease: 'power2.inOut'
+		});
 		
-		app.ticker.add(onTick);
+		gsap.to(spriteIn, {
+			alpha: 1,
+			duration,
+			ease: 'power2.inOut'
+		});
+		
+		gsap.to(spriteIn.scale, {
+			x: 1,
+			y: 1,
+			duration,
+			ease: 'power2.inOut'
+		});
 	}
 	
 	setTimeout(() => {
-		textChangeAnimation(elementTextTitle, 'Clear \nthe board');
+		switchSpriteAnimation(elementTextTitle, elementTextClear);
 	}, 5000);
 	
 	function onResizeHandlerLeftScene() {
-		onResizeHandlerTextTitle();
-		onResizeHandlerContainerUnits();
 		setElementsPosition();
-	}
-	
-	function onResizeHandlerTextTitle() {
-		elementTextTitle.style.fontSize = app.renderer.width / 20;
-		elementTextTitle.position.set(elementTextTitle.width / 2, elementTextTitle.height / 2);
-	}
-	
-	function onResizeHandlerContainerUnits() {
-		elementContainerUnits.position.set(
-			(elementTextTitle.width - elementContainerUnits.width) / 2,
-			elementTextTitle.height + 20
-		);
 	}
 	
 	return elementLeftScene;
