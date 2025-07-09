@@ -140,7 +140,6 @@ export default function createRightScene(app) {
 		isAnimating = true;
 		finger.visible = true;
 		finger.position.set(0, 0);
-		finger.scale.set(1);
 		
 		const tl = gsap.timeline({
 			onComplete: () => {

@@ -7,11 +7,11 @@ export default function createFinger() {
 		type: elementType.SPRITE,
 		texture: allTextureKeys.finger,
 		label: labels.finger,
-		width: 150,
-		height: 150,
+		width: 120,
+		height: 120,
 		interactive: false,
 		anchor: [0.5],
-		visible: false
+		visible: false,
 	});
 	
 	return finger.getElement();
