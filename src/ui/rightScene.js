@@ -1,8 +1,6 @@
-import { gsap } from 'gsap';
-
 import { CELL_SIZE, UNITS } from '../common/constants.js';
 import { elementType, labels } from '../common/enums.js';
-import { watchIdleOnCanvas } from '../helpers/index.js';
+import { useIdleCursorTracker } from '../helpers/index.js';
 import { PixiElement } from '../utils/PixiElement.js';
 import { getAdaptiveSize } from '../utils/utils.js';
 import createCell from './cell.js';
@@ -103,62 +101,26 @@ export default function createRightScene(app) {
 	}
 	
 	function getMatchedGroup() {
-		if (elementBoardFront.children.length) {
-			const label = elementBoardFront.children[0].label;
-			return elementBoardFront.children.filter(cell => cell.label === label);
-		}
+		const source = elementBoardFront.children.length
+			? elementBoardFront
+			: elementBoardBack.children.length
+				? elementBoardBack
+				: null;
 		
-		if (elementBoardBack.children.length && !elementBoardFront.children.length) {
-			const label = elementBoardBack.children[0].label;
-			return elementBoardBack.children.filter(cell => cell.label === label);
-		}
+		if (!source || !source.children.length) return [];
+		
+		const label = source.children[0].label;
+		return source.children.filter(cell => cell.label === label);
 	}
 	
-	watchIdleOnCanvas(app.canvas, 5000, () => {
-		animateCursorSequence();
+	const idleCursor = useIdleCursorTracker({
+		canvas: app.canvas,
+		timeout: 5000,
+		finger,
+		getMatchedGroup
 	});
 	
-	function scaleFinger() {
-		return gsap.to(finger.scale, {
-			x: 0.6,
-			y: 0.6,
-			duration: 0.3,
-			yoyo: true,
-			repeat: 1,
-			ease: 'power1.inOut'
-		}).then();
-	}
-	
-	let isAnimating = false;
-	
-	function animateCursorSequence(onComplete) {
-		if (isAnimating) return;
-		
-		const matchedGroup = getMatchedGroup();
-		if (!matchedGroup || !matchedGroup.length) return;
-		
-		isAnimating = true;
-		finger.visible = true;
-		finger.position.set(0, 0);
-		
-		const tl = gsap.timeline({
-			onComplete: () => {
-				finger.visible = false;
-				isAnimating = false;
-				onComplete?.();
-			}
-		});
-		
-		matchedGroup.forEach(cell => {
-			tl.to(finger.position, {
-				x: cell.position.x + finger.width / 4,
-				y: cell.position.y + finger.height / 2,
-				duration: 1.5,
-				ease: 'power2.inOut'
-			});
-			tl.add(() => scaleFinger());
-		});
-	}
+	idleCursor.start();
 	
 	return elementBoard;
 }
