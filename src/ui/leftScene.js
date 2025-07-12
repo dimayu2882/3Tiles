@@ -1,4 +1,4 @@
-import gsap from 'gsap';
+import { gsap } from 'gsap';
 
 import { allTextureKeys } from '../common/assets.js';
 import { elementType, labels } from '../common/enums.js';

@@ -27,7 +27,7 @@ export class AppGame {
 			autoDensity: true,
 		});
 
-		globalThis.__PIXI_APP__ = this.app;
+		// globalThis.__PIXI_APP__ = this.app;
 
 		this.container.appendChild(this.app.canvas);
 

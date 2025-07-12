@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import { visualizer } from 'rollup-plugin-visualizer';
+import { viteSingleFile } from 'vite-plugin-singlefile';
 
 export default defineConfig({
 	base: './',
@@ -27,10 +28,14 @@ export default defineConfig({
 				drop_debugger: true,
 				passes: 2,
 				dead_code: true,
+				pure_funcs: ['console.log', 'console.info', 'console.debug'],
+				unsafe: true,
+				unsafe_comps: true,
 			},
 			mangle: {
 				toplevel: true,
 				eval: true,
+				reserved: ['__PIXI_APP__'],
 			},
 			format: {
 				comments: false,
@@ -50,6 +55,7 @@ export default defineConfig({
 		target: 'esnext'
 	},
 	plugins: [
+		viteSingleFile(),
 		visualizer({
 			open: true,
 			gzipSize: true,
