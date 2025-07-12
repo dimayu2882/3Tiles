@@ -4,7 +4,7 @@ import path from 'path';
 import bestzip from 'bestzip';
 
 const DIST_DIR = './dist';
-const OUTPUT_ZIP = './playable_ad.zip';
+const OUTPUT_ZIP = './playable.zip';
 const INDEX_HTML_PATH = path.join(DIST_DIR, 'index.html');
 const INDEX_JS_PATH = path.join(DIST_DIR, 'index.js'); // Ожидаем index.js в корне dist
 
@@ -25,7 +25,7 @@ async function inlineScriptAndCleanup() {
 	// Заменяем его на инлайновый скрипт с тем же type="module"
 	html = html.replace(
 		/<script(?=\s|>)([^>]*?)src=["']\.\/index\.js["']([^>]*)>(.*?)<\/script>/gs,
-		(match, preSrcAttrs, postSrcAttrs, innerContent) => {
+		(match, preSrcAttrs, postSrcAttrs) => {
 			// Сохраняем все атрибуты, кроме src, и добавляем type="module" если его нет
 			const attrs = `${preSrcAttrs} ${postSrcAttrs}`.trim();
 			const typeModuleAttr = attrs.includes('type="module"') ? '' : 'type="module"';

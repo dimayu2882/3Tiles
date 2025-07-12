@@ -48,7 +48,7 @@ export class GameManager {
 		this.board.interactive = true;
 		this.board.buttonMode = true;
 		this.board.on('pointerdown', this.handleBoardClick);
-		soundManager.play('bg');
+		// soundManager.play('bg');
 	};
 	
 	handleBoardClick = (event) => {

@@ -11,10 +11,9 @@
     "build": "npm run webp && npm run lint && vite build",
     "lint": "eslint src --config eslint.config.js --fix",
     "dev": "vite",
-    "build:playable": "node build-playable.js"
+    "build:playable": "npm run lint && vite build && node build-playable.js"
   },
   "dependencies": {
-    "execa": "^9.6.0",
     "fluent-ffmpeg": "^2.1.3",
     "gsap": "^3.13.0",
     "howler": "^2.2.4",

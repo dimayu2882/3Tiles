@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite';
-import viteImagemin from 'vite-plugin-imagemin';
 import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
@@ -16,13 +15,8 @@ export default defineConfig({
 		cssCodeSplit: false,
 		rollupOptions: {
 			output: {
-				manualChunks(id) {
-					return 'index';
-				},
-				
-				entryFileNames: 'index.js',
-				chunkFileNames: 'index.js', // Это гарантирует, что даже если Rollup создаст "чанк", он будет называться index.js
-				assetFileNames: 'assets/[name].[hash][extname]',
+				inlineDynamicImports: true, // Объединяет динамические импорты в один файл
+				entryFileNames: 'index.js', // Имя выходного файла
 			}
 		},
 		assetsInlineLimit: 0,
@@ -56,15 +50,6 @@ export default defineConfig({
 		target: 'esnext'
 	},
 	plugins: [
-		viteImagemin({
-			webp: {
-				quality: 75,
-			},
-			pngquant: false,
-			mozjpeg: false,
-			gifsicle: false,
-			svgo: true,
-		}),
 		visualizer({
 			open: true,
 			gzipSize: true,
