@@ -8,17 +8,24 @@ const supportedExtensions = ['.mp3', '.wav', '.ogg', '.m4a', '.aac'];
 fs.readdirSync(inputDir).forEach(file => {
 	const ext = path.extname(file).toLowerCase();
 	if (!supportedExtensions.includes(ext)) return;
-	
+
 	const inputPath = path.join(inputDir, file);
 	const outputFileName = path.basename(file, ext) + '.mp3';
 	const tempOutputPath = path.join(inputDir, `temp_${outputFileName}`);
 	const finalOutputPath = path.join(inputDir, outputFileName);
-	
+
 	// Getting the size of the source file
 	const inputSize = fs.statSync(inputPath).size;
-	
+
 	ffmpeg(inputPath)
-		.audioBitrate('128k')
+		.audioCodec('libmp3lame')
+		.addOutputOptions([
+			'-q:a 8', // VBR качество 8 (максимальное сжатие)
+			'-b:a 64k', // Максимальный битрейт 64k
+			'-compression_level 9', // Максимальное сжатие
+		])
+		.audioFrequency(22050) // Снижаем частоту до 22kHz
+		.audioChannels(1) // Конвертируем в моно
 		.toFormat('mp3')
 		.on('end', () => {
 			try {
@@ -26,28 +33,33 @@ fs.readdirSync(inputDir).forEach(file => {
 					console.error(`Error: Temporary file not found: ${tempOutputPath}`);
 					return;
 				}
-				
+
 				// The size of the temporary file (compressed)
 				const outputSize = fs.statSync(tempOutputPath).size;
-				
+
 				// Calculating the compression percentage
 				const ratio = ((inputSize - outputSize) / inputSize) * 100;
-				
+
 				// We delete the final file, if it exists and differs from temp.
-				if (fs.existsSync(finalOutputPath) && finalOutputPath !== tempOutputPath) {
+				if (
+					fs.existsSync(finalOutputPath) &&
+					finalOutputPath !== tempOutputPath
+				) {
 					fs.unlinkSync(finalOutputPath);
 				}
-				
+
 				// Delete the source file if it exists and differs from the final one.
 				if (fs.existsSync(inputPath) && inputPath !== finalOutputPath) {
 					fs.unlinkSync(inputPath);
 				}
-				
+
 				// Rename the temporary file to the final one
 				fs.renameSync(tempOutputPath, finalOutputPath);
-				
+
 				console.log(`✅ ${file} → ${outputFileName} compressed and replaced`);
-				console.log(`   The original size: ${(inputSize / 1024).toFixed(2)} KB`);
+				console.log(
+					`   The original size: ${(inputSize / 1024).toFixed(2)} KB`
+				);
 				console.log(`   New size: ${(outputSize / 1024).toFixed(2)} KB`);
 				console.log(`   Compression: ${ratio.toFixed(2)}%`);
 			} catch (err) {
